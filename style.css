@@ -1,0 +1,92 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #fff7f2;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  color: #ff7a3d;
+}
+
+.layout {
+  display: flex;
+  gap: 20px;
+}
+
+/* IZQUIERDA */
+.sidebar {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* DERECHA */
+.main {
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* CARDS */
+.card {
+  background: white;
+  padding: 15px;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+input, textarea, select {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
+button {
+  margin-top: 10px;
+  background: #ff9b6a;
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #ff7a3d;
+}
+
+button:disabled {
+  background: #ccc;
+}
+
+/* CHIPS */
+.chips button {
+  margin: 5px;
+  border-radius: 20px;
+  background: #ffe1d3;
+  color: #ff7a3d;
+}
+
+/* SPEECH */
+.speech-card {
+  background: #fff;
+  border-left: 5px solid #ff9b6a;
+  padding: 15px;
+  margin-top: 10px;
+  border-radius: 10px;
+}
+
+.actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+#searchInput {
+  margin-bottom: 10px;
+}
