@@ -97,9 +97,10 @@ async function cargarGrupos() {
 // -------- SPEECHES --------
 window.crearSpeech = async () => {
   const title = document.getElementById("speechTitle");
+  const detail = document.getElementById("speechDetail");
   const content = document.getElementById("speechContent");
 
-  if (!title.value || !content.value) return;
+  if (!title.value || !detail.value || !content.value) return;
 
   await addDoc(
     collection(
@@ -112,11 +113,14 @@ window.crearSpeech = async () => {
     ),
     {
       title: title.value,
-      content: content.value
+      detail: detail.value,
+      content: content.value,
+      createdAt: new Date()
     }
   );
 
   title.value = "";
+  detail.value = "";
   content.value = "";
   cargarSpeeches();
 };
@@ -143,7 +147,8 @@ async function cargarSpeeches() {
 }
 
 // EDITAR
-window.editarSpeech = async (id, title, content) => {
+
+window.editarSpeech = async (id, title, detail, content) => {
   const ref = doc(
     db,
     "areas",
@@ -156,10 +161,12 @@ window.editarSpeech = async (id, title, content) => {
 
   let updateData = {};
   if (title !== null) updateData.title = title;
+  if (detail !== null) updateData.detail = detail;
   if (content !== null) updateData.content = content;
 
   await updateDoc(ref, updateData);
 };
+
 
 // ELIMINAR
 window.eliminarSpeech = async (id) => {
@@ -227,38 +234,65 @@ window.buscarSpeeches = async (texto) => {
 
 function renderSpeech(docSnap, data, container) {
   const div = document.createElement("div");
-  div.className = "speech-card";
+  div.className = "speech-card collapsed";
 
+  // TÍTULO
   const title = document.createElement("h4");
   title.contentEditable = true;
   title.innerText = data.title;
-  title.onblur = () => editarSpeech(docSnap.id, title.innerText, null);
+  title.onblur = () =>
+    editarSpeech(docSnap.id, title.innerText, null, null);
 
+  // DETALLE
+  const detail = document.createElement("small");
+  detail.contentEditable = true;
+  detail.innerText = data.detail || "";
+  detail.onblur = () =>
+    editarSpeech(docSnap.id, null, detail.innerText, null);
+
+  // CONTENIDO
   const content = document.createElement("p");
   content.contentEditable = true;
   content.innerText = data.content;
-  content.onblur = () => editarSpeech(docSnap.id, null, content.innerText);
+  content.onblur = () =>
+    editarSpeech(docSnap.id, null, null, content.innerText);
 
+  // ACCIONES
   const actions = document.createElement("div");
   actions.className = "actions";
 
+  // COPIAR
   const copyBtn = document.createElement("button");
-  copyBtn.innerText = "Copiar";
-  copyBtn.onclick = () => copiarTexto(content.innerText);
+  copyBtn.innerHTML = "📋";
+  copyBtn.title = "Copiar";
+  copyBtn.onclick = () => copiarTexto(data.content);
 
+  // ELIMINAR
   const deleteBtn = document.createElement("button");
-  deleteBtn.innerText = "Eliminar";
-  deleteBtn.onclick = () => eliminarSpeech(docSnap.id);
+  deleteBtn.innerHTML = "🗑️";
+  deleteBtn.title = "Eliminar";
+  deleteBtn.onclick = () => {
+    if (confirm("¿Eliminar este speech?")) {
+      eliminarSpeech(docSnap.id);
+    }
+  };
 
-  actions.appendChild(copyBtn);
-  actions.appendChild(deleteBtn);
+  // EXPANDIR
+  
+  const expandBtn = document.createElement("button");
+  expandBtn.innerHTML = "⤢";
+  expandBtn.title = "Ver completo";
+  expandBtn.onclick = () => abrirModal(data);
 
-  div.appendChild(title);
-  div.appendChild(content);
-  div.appendChild(actions);
 
+  actions.append(copyBtn, deleteBtn, expandBtn);
+
+  div.append(actions, title, detail, content);
   container.appendChild(div);
 }
+
+
+
 
 document.getElementById("searchInput").addEventListener("input", (e) => {
   const texto = e.target.value;
@@ -270,3 +304,29 @@ document.getElementById("searchInput").addEventListener("input", (e) => {
 
   buscarSpeeches(texto);
 });
+
+
+const modal = document.getElementById("speechModal");
+const modalTitle = document.getElementById("modalTitle");
+const modalDetail = document.getElementById("modalDetail");
+const modalContent = document.getElementById("modalContent");
+const closeModal = document.getElementById("closeModal");
+
+function abrirModal(data) {
+  modalTitle.innerText = data.title;
+  modalDetail.innerText = data.detail || "";
+  modalContent.innerText = data.content;
+
+  modal.classList.remove("hidden");
+}
+
+closeModal.onclick = () => {
+  modal.classList.add("hidden");
+};
+
+// cerrar si se hace click fuera
+modal.onclick = (e) => {
+  if (e.target === modal) {
+    modal.classList.add("hidden");
+  }
+};
