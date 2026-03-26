@@ -41,6 +41,7 @@
       <div class="card">
         <h3>📝 Crear Speech</h3>
         <input id="speechTitle" placeholder="Título">
+        <input id="speechDetail" placeholder="Detalle">
         <textarea id="speechContent" placeholder="Contenido"></textarea>
         <button id="btnSpeech" onclick="crearSpeech()" disabled>Crear</button>
       </div>
@@ -56,6 +57,18 @@
     </div>
 
   </div>
+
+
+  <div id="speechModal" class="modal hidden">
+    <div class="modal-content">
+      <button id="closeModal" class="close-btn">✖</button>
+
+      <h3 id="modalTitle"></h3>
+      <small id="modalDetail"></small>
+      <p id="modalContent"></p>
+    </div>
+  </div>
+
 
   <script type="module" src="app.js"></script>
 </body>
